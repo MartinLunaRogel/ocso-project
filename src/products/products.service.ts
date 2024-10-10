@@ -2,9 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { v4 as uuid } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from './entities/product.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
+  constructor(@InjectRepository(Product)
+    private ProuctRepository: Repository<Product>)
+    {}
   private products: CreateProductDto[] = [
     {
       productId: uuid(),
@@ -30,19 +36,20 @@ export class ProductsService {
   ]
 
   create(createProductDto: CreateProductDto) {
-    createProductDto.productId = uuid();
-    this.products.push(createProductDto)
-    return createProductDto;
+    const product = this.ProuctRepository.save(createProductDto)
+    return product;
   }
 
   findAll() {
-    return this.products;
+    return this.ProuctRepository.find();
   }
 
   findOne(id: string) {
-    const productfound = this.products.filter((product) => product.productId === id)[0]
-    if(!productfound) throw new NotFoundException;
-    return productfound;
+    const product = this.ProuctRepository.findBy({
+      productId : id,
+    })
+    if (!product) throw new NotFoundException()
+    return product;
   }
 
   findByProvider(id: string){
@@ -51,17 +58,23 @@ export class ProductsService {
     return productsFound;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    let product = this.findOne(id)
-    return {
-        ...product,
-        ...updateProductDto
-    }
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    const productToUpdate = await this.ProuctRepository.preload({
+      productId: id,
+      ... updateProductDto,
+    })
+    if(!productToUpdate) throw new NotFoundException()
+      this.ProuctRepository.save(productToUpdate);
+    return productToUpdate;
   }
 
   remove(id: string) {
-    const {productId} = this.findOne(id)
-    this.products = this.products.filter((product) => product.productId != productId)
-    return this.products;
+    this.findOne(id)
+    this.ProuctRepository.delete({
+      productId: id,
+    })
+    return{
+      message: `Objeto con id ${id} eliminado`
+    }
   }
 }
