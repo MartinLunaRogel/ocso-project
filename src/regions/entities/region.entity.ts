@@ -14,5 +14,5 @@ export class Region {
     regionStates: string[];
 
     @OneToMany(() => Location, (Location) => Location.region)
-    location: Location[];
+    locations: Location[];
 }

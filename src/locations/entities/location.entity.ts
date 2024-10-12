@@ -1,31 +1,32 @@
 import { Employee } from "src/employees/entities/employee.entity";
 import { Manager } from "src/managers/entities/manager.entity";
 import { Region } from "src/regions/entities/region.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Location {
-    @PrimaryGeneratedColumn('increment')
-    locationId: number;
-    @Column('text')
-    locationName: string;
-    @Column('text')
-    locationAdress: string;
-    @Column('simple-array')
-    locationLatLng: number[];
+  @PrimaryGeneratedColumn('increment')
+  locationId: number;
+  @Column('text')
+  locationName: string;
+  @Column('text')
+  locationAddress: string;
+  @Column('simple-array')
+  locationLatLng: number[];
 
-    @OneToOne(() => Manager)
-    @JoinColumn({
-        name: "managerId"
-    })
-    manager: Manager;
+  @OneToOne(() => Manager, {
+    eager: true,
+  })
+  @JoinColumn({
+    name: "managerId"
+  })
+  manager: Manager;
+  @ManyToOne(() => Region, (region) => region.locations)
+  @JoinColumn({
+    name: "regionId"
+  })
+  region: Region;
 
-    @ManyToOne(() => Region, (region) => region.location)
-    @JoinColumn({
-        name: "regionId"
-    })
-    region: Region;
-
-    @OneToMany(() => Employee, (employee) => employee.location)
-    employees: Employee[];
+  @OneToMany(() => Employee, (employee) => employee.location)
+  employees: Employee[];
 }
