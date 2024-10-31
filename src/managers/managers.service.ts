@@ -7,13 +7,12 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ManagersService {
-constructor(
-  @InjectRepository(Manager)
-  private managerRepository: Repository<Manager>
-){}
-
+  constructor(
+    @InjectRepository(Manager)
+    private managerRepository: Repository<Manager>
+  ){}
   create(createManagerDto: CreateManagerDto) {
-    return this.managerRepository.save(createManagerDto)
+    return this.managerRepository.save(createManagerDto);
   }
 
   findAll() {
@@ -24,14 +23,13 @@ constructor(
     const manager = this.managerRepository.findOneBy({
       managerId: id
     })
-    if(!manager) throw new NotFoundException("No manager found")
-    return manager
+    if (!manager) throw new NotFoundException("No manager found")
   }
 
- async update(id: string, updateManagerDto: UpdateManagerDto) {
+  async update(id: string, updateManagerDto: UpdateManagerDto) {
     const managerToUpdate = await this.managerRepository.preload({
       managerId: id,
-      ...updateManagerDto
+        ...updateManagerDto
     })
     return this.managerRepository.save(managerToUpdate)
   }

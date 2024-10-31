@@ -6,7 +6,6 @@ import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { ApiAuth } from 'src/auth/decorators/api.decorator';
 import { ApiTags } from '@nestjs/swagger';
-
 @ApiAuth()
 @ApiTags('Products')
 @Controller('products')
@@ -33,8 +32,8 @@ export class ProductsController {
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
   @Get('provider/:id')
-  findByProvider(@Param('id', new ParseUUIDPipe({version: '4'})) id: string){
-    return this.productsService.findByProvider(id);
+  findByProvider(@Param('id', new ParseUUIDPipe({version: '4'})) id: string) {
+    return this.productsService.findByProvider(id)
   }
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)

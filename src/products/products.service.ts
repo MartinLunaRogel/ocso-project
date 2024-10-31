@@ -4,54 +4,54 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
-
+import { v4 as uuid } from 'uuid';
 @Injectable()
 export class ProductsService {
-  constructor(@InjectRepository(Product)
-    private ProuctRepository: Repository<Product>)
-    {}
-
+  constructor(
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>
+  ){}
   create(createProductDto: CreateProductDto) {
-    const product = this.ProuctRepository.save(createProductDto)
+    const product = this.productRepository.save(createProductDto);
     return product;
   }
 
   findAll() {
-    return this.ProuctRepository.find();
+    return this.productRepository.find();
   }
 
   findOne(id: string) {
-    const product = this.ProuctRepository.findBy({
-      productId : id,
+    const product = this.productRepository.findOneBy({
+      productId: id,
     })
     if (!product) throw new NotFoundException()
     return product;
   }
 
-  findByProvider(id: string){
-    return this.ProuctRepository.findBy({
+  findByProvider(id: string) {
+    return this.productRepository.findBy({
       provider: {
-        providerID: id
+        providerId: id,
       }
     })
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
-    const productToUpdate = await this.ProuctRepository.preload({
+    const productToUpdate = await this.productRepository.preload({
       productId: id,
-      ... updateProductDto,
+      ...updateProductDto
     })
-    if(!productToUpdate) throw new NotFoundException()
-      this.ProuctRepository.save(productToUpdate);
+    if (!productToUpdate) throw new NotFoundException()
+    this.productRepository.save(productToUpdate);
     return productToUpdate;
   }
 
   remove(id: string) {
     this.findOne(id)
-    this.ProuctRepository.delete({
+    this.productRepository.delete({
       productId: id,
     })
-    return{
+    return {
       message: `Objeto con id ${id} eliminado`
     }
   }

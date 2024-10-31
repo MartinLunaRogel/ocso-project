@@ -19,13 +19,14 @@ export class EmployeesController {
   @ApiResponse({
     status: 201,
     example: {
-      empoyeeId: "UUID",
+      employeeId: "UUID",
       employeeName: "Karlo",
       employeeEmail: "karlo@gmail.com",
       employeeLastName: "Paz",
       employeePhoneNumber: "442138841",
     } as Employee
   })
+
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);

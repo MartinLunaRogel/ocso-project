@@ -31,14 +31,14 @@ export class EmployeesService {
 
   findOne(id: string) {
     const employee = this.employeeRepository.findOneBy({
-      empoyeeId: id
+      employeeId: id
     })
     return employee;
   }
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const employeeToUpdate = await this.employeeRepository.preload({
-      empoyeeId: id,
+      employeeId: id,
       ...updateEmployeeDto
     })
     this.employeeRepository.save(employeeToUpdate)
@@ -47,7 +47,7 @@ export class EmployeesService {
 
   remove(id: string) {
     this.employeeRepository.delete({
-      empoyeeId: id
+      employeeId: id
     })
     return {
       message: "Employee deleted"

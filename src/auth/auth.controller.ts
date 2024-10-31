@@ -1,12 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TOKEN_NAME } from './constants/jwt.constants';
 import { Response } from 'express';
-import { Cookies } from './decorators/cookies.decorators';
+import { Cookies } from './decorators/cookies.decorator';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -15,7 +16,6 @@ export class AuthController {
   @Post("signup")
   signup(@Body() createUserDto: CreateUserDto){
     return this.authService.registerUser(createUserDto)
-    
   }
 
   @Post("login")
@@ -32,9 +32,9 @@ export class AuthController {
     });
     return;
   }
-
   @Patch("/:email")
   updateUser(@Param('email') userEmail: string, @Body() updateUserDto:UpdateUserDto) {
     return this.authService.updateUser(userEmail, updateUserDto)
   }
+
 }
