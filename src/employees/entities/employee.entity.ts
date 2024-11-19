@@ -20,13 +20,13 @@ export class Employee {
     type: 'text',
     nullable: true
   })
-  emplyeePhoto: string;
+  employeePhoto: string;
 
   @ManyToOne(() => Location, (location) => location.employees)
   @JoinColumn({
     name: "locationId"
   })
-  location: Location;
+  location: Location | string;
 
   @OneToOne(() => User)
   @JoinColumn({
